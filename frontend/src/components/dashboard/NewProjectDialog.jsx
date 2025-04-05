@@ -117,9 +117,6 @@ const NewProjectDialog = ({ open, onClose, newProject, setNewProject, onCreatePr
         commits: []
       };
       
-      // console.log(newP);
-      
-
       const existingProjects = JSON.parse(localStorage.getItem('user_projects') || '[]');
       
       const updatedProjects = [...existingProjects, newProject];
