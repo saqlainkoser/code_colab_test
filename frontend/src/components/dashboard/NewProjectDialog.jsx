@@ -8,10 +8,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
 import { CalendarIcon, CheckIcon, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
+import { projectAPI } from "@/services/firebaseAPI";
+import { auth } from "@/services/firebase";
 
 const projectTemplates = [
   { id: 'web', name: 'Web Development', icon: '🌐', description: 'Create a web application with frontend and backend components' },
@@ -101,13 +102,71 @@ const NewProjectDialog = ({ open, onClose, newProject, setNewProject, onCreatePr
     e.preventDefault();
     setIsCreating(true);
     
-    try {
-      const projectId = String(Date.now());
+    // try {
+    //   const projectId = String(Date.now());
+
+    //   const newProject = {
+    //     id: projectId,
+    //     ...formData,
+    //     createdAt: new Date(),
+    //     tasksCount: {
+    //       total: 0,
+    //       completed: 0
+    //     },
+    //     files: [],
+    //     meetings: [],
+    //     commits: []
+    //   };
       
+    //   // const existingProjects = JSON.parse(localStorage.getItem('user_projects') || '[]');
+      
+    //   // Fetch existing projects from Firebase
+    //   const existingProjects = await projectAPI.getProjects();
+      
+    //   const updatedProjects = [...existingProjects, newProject];
+      
+    //   // Save updated projects to localStorage
+    //   localStorage.setItem('user_projects', JSON.stringify(updatedProjects));
+      
+    //   if (onCreateProject) {
+    //     onCreateProject(newProject);
+    //   }
+      
+    //   toast({
+    //     title: "Project created",
+    //     description: `${formData.title} has been created successfully`,
+    //   });
+      
+    //   navigate(`/projects/${projectId}`);
+    // } catch (error) {
+    //   console.error('Failed to create project:', error);
+    //   toast({
+    //     title: "Creation failed",
+    //     description: "There was an error creating your project",
+    //     variant: "destructive"
+    //   });
+    // } finally {
+    //   setIsCreating(false);
+    // }
+
+    try {
+      // Get current user
+      const userId = auth.currentUser?.uid;
+      if (!userId) {
+        throw new Error('User not authenticated');
+      }
+  
+      // Fetch existing projects from Firebase
+      const existingProjects = await projectAPI.getProjects();
+      
+      // Create new project with proper format
       const newProject = {
-        id: projectId,
+        id: String(Date.now()),
         ...formData,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        owner: userId,
+        members: [userId],
         tasksCount: {
           total: 0,
           completed: 0
@@ -116,28 +175,31 @@ const NewProjectDialog = ({ open, onClose, newProject, setNewProject, onCreatePr
         meetings: [],
         commits: []
       };
+  
+      // Add new project to Firebase
+      const result = await projectAPI.createProject(newProject);
       
-      const existingProjects = JSON.parse(localStorage.getItem('user_projects') || '[]');
-      
-      const updatedProjects = [...existingProjects, newProject];
-      
-      localStorage.setItem('user_projects', JSON.stringify(updatedProjects));
-      
-      if (onCreateProject) {
-        onCreateProject(newProject);
+      if (result) {
+        // Update local storage for backup
+        const allProjects = [...existingProjects, newProject];
+        localStorage.setItem('user_projects', JSON.stringify(allProjects));
+        
+        if (onCreateProject) {
+          onCreateProject(newProject);
+        }
+        
+        toast({
+          title: "Project created",
+          description: `${formData.title} has been created successfully`,
+        });
+        
+        navigate(`/projects/${newProject.id}`);
       }
-      
-      toast({
-        title: "Project created",
-        description: `${formData.title} has been created successfully`,
-      });
-      
-      navigate(`/projects/${projectId}`);
     } catch (error) {
       console.error('Failed to create project:', error);
       toast({
         title: "Creation failed",
-        description: "There was an error creating your project",
+        description: error.message || "There was an error creating your project",
         variant: "destructive"
       });
     } finally {

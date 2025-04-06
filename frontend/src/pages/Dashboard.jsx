@@ -32,6 +32,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
+      <hr className="border-b border-border my-4" />
       <main className="container mx-auto px-4 py-6 pt-24">
         <DashboardHeader />
         <DashboardContent />

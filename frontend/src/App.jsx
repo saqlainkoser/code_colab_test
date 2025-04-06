@@ -91,7 +91,8 @@ import Chat from './pages/Chat';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Features from './pages/Features';
-
+import CreateProjectTest from './../TestComponents/CreateProjectTest';
+import FetchProjectTest from './../TestComponents/FetchProjectTest';
 // Import Firebase initialization to ensure it's loaded before AuthProvider
 import './services/firebase';
 
@@ -123,6 +124,8 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="*" element={<NotFound />} />
+                <Route path="/create-project" element={<CreateProjectTest />} />
+                <Route path="/fetch-project" element={<FetchProjectTest />} />
               </Routes>
             </TooltipProvider>
           </NotificationsProvider>

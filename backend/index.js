@@ -1,17 +1,19 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import dotenv from 'dotenv';
 
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const path = require('path');
-require('dotenv').config();
+// Load environment variables
+dotenv.config();
 
 // Import routes
-const authRoutes = require('./routes/auth');
-const projectRoutes = require('./routes/projects');
-const taskRoutes = require('./routes/tasks');
-const userRoutes = require('./routes/users');
-const chatRoutes = require('./routes/chats');
+import authRoutes from './routes/auth.cjs';
+import projectRoutes from './routes/projects.cjs';
+import taskRoutes from './routes/tasks.cjs';
+import userRoutes from './routes/users.cjs';
+import chatRoutes from './routes/chats.cjs';
 
 // Create Express app
 const app = express();

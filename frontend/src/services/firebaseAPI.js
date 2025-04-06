@@ -1,4 +1,3 @@
-
 import { 
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -580,7 +579,7 @@ export const listenTo = (path, callback) => {
   return () => off(dbRef);
 };
 
-export const listenToList = (path, orderBy = null, equalToValue = null, callback) => {
+export const listenToList = (path, orderBy = null, equalToValue = null, callback, errorCallback = () => {}) => {
   let dbRef = ref(database, path);
   
   if (orderBy && equalToValue) {
@@ -596,6 +595,9 @@ export const listenToList = (path, orderBy = null, equalToValue = null, callback
     } else {
       callback([]);
     }
+  }, (error) => {
+    console.error('Error in Firebase listener:', error);
+    errorCallback(error);
   });
   
   // Return function to unsubscribe

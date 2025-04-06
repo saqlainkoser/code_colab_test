@@ -66,6 +66,7 @@ import ProjectsList from '@/components/dashboard/ProjectsList';
 import RecentTasks from '@/components/dashboard/RecentTasks';
 import useDashboard from '@/hooks/useDashboard';
 import { toast } from '@/hooks/use-toast';
+import TestProjects from './TestProjects';
 
 const DashboardContent = () => {
   const {
@@ -128,6 +129,7 @@ const DashboardContent = () => {
         }}
       />
       
+      <TestProjects />
       <RecentTasks tasks={tasks} />
     </>
   );

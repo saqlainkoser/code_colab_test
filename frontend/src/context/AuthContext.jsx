@@ -251,6 +251,8 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log("Attempting login with:", email);
       const userDetails = await loginWithEmailPassword(email, password);
+      console.log("Login successful:", userDetails);
+      
       setUser(userDetails);
       saveUser(userDetails);
       
